@@ -1,0 +1,1 @@
+// Purpose: Generate QR codes for restaurant menu URLs used by customers.
