@@ -1,1 +1,26 @@
-// Purpose: Define the User Mongoose schema for admin account data.
+const mongoose = require('mongoose');
+
+const userSchema = new mongoose.Schema(
+  {
+    name: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+    role: {
+      type: String,
+      enum: ['super_admin', 'owner'],
+      required: true,
+    },
+    status: {
+      type: String,
+      enum: ['pending', 'approved', 'rejected', 'disabled'],
+      default: 'pending',
+    },
+    restaurantId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Restaurant',
+    },
+  },
+  { timestamps: true }
+);
+
+module.exports = mongoose.model('User', userSchema);
