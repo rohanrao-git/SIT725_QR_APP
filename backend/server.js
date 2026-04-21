@@ -24,7 +24,8 @@ app.use('/api/auth', authRoutes);
 app.use('/api/restaurants', restaurantRoutes);
 app.use('/api/menu', menuRoutes);
 
-const PORT = process.env.PORT || 5000;
+// Default 5001: macOS often binds 5000 (e.g. AirPlay Receiver).
+const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
