@@ -1,4 +1,4 @@
-// Purpose: Verify JWT tokens and protect admin-only API routes.
+
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 

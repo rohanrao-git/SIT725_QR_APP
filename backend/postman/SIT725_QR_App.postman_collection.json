@@ -1,0 +1,298 @@
+{
+  "info": {
+    "_postman_id": "a1b2c3d4-sit725-qr-app",
+    "name": "SIT725 QR App API",
+    "description": "Single-file collection with runnable payloads for current routes and edge cases.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5001"
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "ownerEmail",
+      "value": "owner@example.com"
+    },
+    {
+      "key": "ownerPassword",
+      "value": "owner123"
+    },
+    {
+      "key": "adminEmail",
+      "value": "admin@system.com"
+    },
+    {
+      "key": "adminPassword",
+      "value": "admin123"
+    },
+    {
+      "key": "ownerId",
+      "value": ""
+    },
+    {
+      "key": "restaurantId",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "GET /",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/",
+            "description": "API health check. Expect 200."
+          },
+          "response": [],
+          "auth": {
+            "type": "noauth"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "POST /api/auth/register (new owner)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Demo Owner\",\n  \"email\": \"{{ownerEmail}}\",\n  \"password\": \"{{ownerPassword}}\"\n}"
+            },
+            "url": "{{baseUrl}}/api/auth/register",
+            "description": "Public endpoint. Creates owner; duplicate email returns 409."
+          },
+          "response": [],
+          "auth": {
+            "type": "noauth"
+          }
+        },
+        {
+          "name": "POST /api/auth/login (super admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{adminEmail}}\",\n  \"password\": \"{{adminPassword}}\"\n}"
+            },
+            "url": "{{baseUrl}}/api/auth/login",
+            "description": "Public endpoint. Uses seeded super admin credentials."
+          },
+          "response": [],
+          "auth": {
+            "type": "noauth"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "  const json = pm.response.json();",
+                  "  if (json.token) pm.collectionVariables.set('token', json.token);",
+                  "}",
+                  "pm.test('Expected login response code', function () {",
+                  "  pm.expect([200,401,400]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /api/auth/login (restaurant owner)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{ownerEmail}}\",\n  \"password\": \"{{ownerPassword}}\"\n}"
+            },
+            "url": "{{baseUrl}}/api/auth/login",
+            "description": "Public endpoint. Owner credentials from seed script."
+          },
+          "response": [],
+          "auth": {
+            "type": "noauth"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "  const json = pm.response.json();",
+                  "  if (json.token) pm.collectionVariables.set('token', json.token);",
+                  "}",
+                  "pm.test('Expected owner login response code', function () {",
+                  "  pm.expect([200,403,401,400]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /api/auth/login (wrong password)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{adminEmail}}\",\n  \"password\": \"wrongpass\"\n}"
+            },
+            "url": "{{baseUrl}}/api/auth/login",
+            "description": "Expect 401."
+          },
+          "response": [],
+          "auth": {
+            "type": "noauth"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin (Protected)",
+      "item": [
+        {
+          "name": "GET /api/admin/owners/pending",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/admin/owners/pending",
+            "description": "Requires super_admin bearer token."
+          },
+          "response": []
+        },
+        {
+          "name": "PATCH /api/admin/owners/:id/approve",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/admin/owners/{{ownerId}}/approve",
+            "description": "Requires super_admin. Approves owner and creates/links restaurant."
+          },
+          "response": []
+        },
+        {
+          "name": "PATCH /api/admin/owners/:id/reject",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/admin/owners/{{ownerId}}/reject",
+            "description": "Requires super_admin."
+          },
+          "response": []
+        },
+        {
+          "name": "PATCH /api/admin/owners/:id/disable",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/admin/owners/{{ownerId}}/disable",
+            "description": "Requires super_admin."
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/admin/restaurants",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/admin/restaurants",
+            "description": "Requires super_admin."
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/admin/restaurants/:id/tables",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"totalTables\": 5\n}"
+            },
+            "url": "{{baseUrl}}/api/admin/restaurants/{{restaurantId}}/tables",
+            "description": "Requires super_admin. Recreates tables 1..totalTables with QRs."
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/admin/restaurants/:id/tables",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/admin/restaurants/{{restaurantId}}/tables",
+            "description": "Requires super_admin."
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  }
+}
