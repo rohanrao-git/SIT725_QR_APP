@@ -1,7 +1,8 @@
 // Purpose: Verify JWT tokens and protect admin-only API routes.
 const jwt = require('jsonwebtoken');
+const User = require('../models/User');
 
-function protect(req, res, next) {
+async function protect(req, res, next) {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return res.status(401).json({ success: false, message: 'Not authorized' });
@@ -12,7 +13,16 @@ function protect(req, res, next) {
   }
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded;
+    const user = await User.findById(decoded.id).select('_id role email name');
+    if (!user) {
+      return res.status(401).json({ success: false, message: 'Not authorized' });
+    }
+    req.user = {
+      id: String(user._id),
+      role: user.role,
+      email: user.email,
+      name: user.name,
+    };
     next();
   } catch {
     return res.status(401).json({ success: false, message: 'Not authorized' });
