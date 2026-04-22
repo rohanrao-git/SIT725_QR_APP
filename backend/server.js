@@ -13,12 +13,15 @@ dotenv.config();
 connectDB();
 
 const app = express();
+const path = require('path');
 
 app.use(cors());
 app.use(express.json());
 
+app.use(express.static(path.join(__dirname, '../frontend')));
+
 app.get('/', (req, res) => {
-  res.status(200).json({ message: 'SIT725 QR App API is running' });
+  res.sendFile(path.join(__dirname, '../frontend/pages', 'login.html'));
 });
 
 app.use('/api/auth', authRoutes);
