@@ -3,7 +3,6 @@ body {
   background: #f5f6fa;
 }
 
-/* Navbar */
 .dashboard-page nav {
   margin-bottom: 20px;
 }
@@ -26,13 +25,10 @@ nav ul li a.dropdown-trigger {
   color: #00695c;
 }
 
-
-/* Sections */
 .scroll-section {
   scroll-margin-top: 90px;
 }
 
-/* Cards */
 .dashboard-card {
   border-radius: 12px;
 }
@@ -64,7 +60,6 @@ nav ul li a.dropdown-trigger {
     width: 100%;
   }
 }
-/* Tables */
 .table-responsive {
   overflow-x: auto;
   width: 100%;
@@ -73,7 +68,7 @@ th {
   white-space: nowrap;
 }
 th, td {
-  padding: 14px 14px;   /* ↑ increase horizontal space */
+  padding: 14px 14px;   
 }
 .admin-data-table {
   min-width: 900px;
@@ -101,12 +96,10 @@ th, td {
   vertical-align: middle;
 }
 
-/* Buttons */
 .action-btn {
   margin: 3px;
 }
 
-/* Status badges */
 .badge-status {
   padding: 4px 10px;
   border-radius: 20px;
@@ -131,15 +124,11 @@ th, td {
   background-color: #757575;
 }
 
-/* ===================================== */
-/* 🔥 BIG MODAL (MENU VIEW) */
-/* ===================================== */
-
 .custom-modal {
   width: 85% !important;
-  height: 95vh !important;        /* almost full screen */
+  height: 95vh !important;        
   max-height: 95vh !important;
-  top: 2.5% !important;           /* small margin from top */
+  top: 2.5% !important;           
   border-radius: 12px;
   flex-direction: column;
 }
