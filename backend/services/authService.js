@@ -8,7 +8,15 @@ function stripPassword(doc) {
   return o;
 }
 
-async function registerOwner({ name, email, password }) {
+async function registerOwner({
+  name,
+  email,
+  password,
+  pendingRestaurantName,
+  pendingRestaurantAddress,
+  pendingRestaurantPhone,
+  pendingRestaurantEmail,
+}) {
   const existing = await User.findOne({ email });
   if (existing) {
     throw new Error('Email already registered');
@@ -20,6 +28,10 @@ async function registerOwner({ name, email, password }) {
     password: hashedPassword,
     role: 'owner',
     status: 'pending',
+    pendingRestaurantName,
+    pendingRestaurantAddress,
+    pendingRestaurantPhone,
+    pendingRestaurantEmail,
   });
   return stripPassword(user);
 }

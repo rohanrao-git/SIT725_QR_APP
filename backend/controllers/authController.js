@@ -3,14 +3,33 @@ const authService = require('../services/authService');
 
 async function registerOwner(req, res) {
   try {
-    const { name, email, password } = req.body;
-    if (!name || !email || !password) {
+    const {
+      name,
+      email,
+      password,
+      pendingRestaurantName,
+      pendingRestaurantAddress,
+      pendingRestaurantPhone,
+      pendingRestaurantEmail,
+    } = req.body;
+
+    if (!name || !email || !password || !pendingRestaurantName || !pendingRestaurantAddress) {
       return res.status(400).json({
         success: false,
-        message: 'Name, email, and password are required',
+        message: 'Name, email, password, restaurant name, and restaurant address are required',
       });
     }
-    const user = await authService.registerOwner({ name, email, password });
+
+    const user = await authService.registerOwner({
+      name,
+      email,
+      password,
+      pendingRestaurantName,
+      pendingRestaurantAddress,
+      pendingRestaurantPhone,
+      pendingRestaurantEmail,
+    });
+
     return res.status(201).json({ success: true, user });
   } catch (err) {
     if (err.message === 'Email already registered') {
