@@ -1,108 +1,56 @@
 {
   "info": {
-    "_postman_id": "a1b2c3d4-sit725-qr-app",
-    "name": "SIT725 QR App API",
-    "description": "Single-file collection with runnable payloads for current routes and edge cases.",
+    "_postman_id": "a1b2c3d4-sit725-qr-app-e2e",
+    "name": "SIT725 QR App API (E2E)",
+    "description": "Collection aligned with current backend routes. Use with npm run seed:e2e.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
-    {
-      "key": "baseUrl",
-      "value": "http://localhost:5001"
-    },
-    {
-      "key": "token",
-      "value": ""
-    },
-    {
-      "key": "ownerEmail",
-      "value": "owner@example.com"
-    },
-    {
-      "key": "ownerPassword",
-      "value": "owner123"
-    },
-    {
-      "key": "adminEmail",
-      "value": "admin@system.com"
-    },
-    {
-      "key": "adminPassword",
-      "value": "admin123"
-    },
-    {
-      "key": "ownerId",
-      "value": ""
-    },
-    {
-      "key": "restaurantId",
-      "value": ""
-    }
+    { "key": "baseUrl", "value": "http://localhost:5001" },
+    { "key": "adminEmail", "value": "admin@system.com" },
+    { "key": "adminPassword", "value": "admin123" },
+    { "key": "ownerEmail", "value": "owner@example.com" },
+    { "key": "ownerPassword", "value": "owner123" },
+    { "key": "pendingOwnerEmail", "value": "pending.owner@example.com" },
+    { "key": "pendingOwnerPassword", "value": "owner123" },
+    { "key": "newOwnerEmail", "value": "new.owner@example.com" },
+    { "key": "adminToken", "value": "" },
+    { "key": "ownerToken", "value": "" },
+    { "key": "pendingOwnerId", "value": "" },
+    { "key": "restaurantId", "value": "" }
   ],
   "item": [
     {
-      "name": "Health",
+      "name": "1) Public",
       "item": [
         {
           "name": "GET /",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": "{{baseUrl}}/",
-            "description": "API health check. Expect 200."
-          },
-          "response": [],
-          "auth": {
-            "type": "noauth"
-          }
-        }
-      ]
-    },
-    {
-      "name": "Auth",
-      "item": [
-        {
-          "name": "POST /api/auth/register (new owner)",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"name\": \"Demo Owner\",\n  \"email\": \"{{ownerEmail}}\",\n  \"password\": \"{{ownerPassword}}\"\n}"
-            },
-            "url": "{{baseUrl}}/api/auth/register",
-            "description": "Public endpoint. Creates owner; duplicate email returns 409."
-          },
-          "response": [],
-          "auth": {
-            "type": "noauth"
-          }
+          "request": { "method": "GET", "url": "{{baseUrl}}/" },
+          "response": []
         },
         {
-          "name": "POST /api/auth/login (super admin)",
+          "name": "POST /api/auth/register (new pending owner)",
           "request": {
             "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/auth/register",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"New Owner\",\n  \"email\": \"{{newOwnerEmail}}\",\n  \"password\": \"owner123\",\n  \"pendingRestaurantName\": \"New Owner Bistro\",\n  \"pendingRestaurantAddress\": \"1 New Street\",\n  \"pendingRestaurantPhone\": \"+61 499 100 100\",\n  \"pendingRestaurantEmail\": \"new.owner.bistro@example.com\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/auth/login (admin)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/auth/login",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"email\": \"{{adminEmail}}\",\n  \"password\": \"{{adminPassword}}\"\n}"
-            },
-            "url": "{{baseUrl}}/api/auth/login",
-            "description": "Public endpoint. Uses seeded super admin credentials."
-          },
-          "response": [],
-          "auth": {
-            "type": "noauth"
+            }
           },
           "event": [
             {
@@ -112,36 +60,24 @@
                 "exec": [
                   "if (pm.response.code === 200) {",
                   "  const json = pm.response.json();",
-                  "  if (json.token) pm.collectionVariables.set('token', json.token);",
-                  "}",
-                  "pm.test('Expected login response code', function () {",
-                  "  pm.expect([200,401,400]).to.include(pm.response.code);",
-                  "});"
+                  "  if (json.token) pm.collectionVariables.set('adminToken', json.token);",
+                  "}"
                 ]
               }
             }
-          ]
+          ],
+          "response": []
         },
         {
-          "name": "POST /api/auth/login (restaurant owner)",
+          "name": "POST /api/auth/login (approved owner)",
           "request": {
             "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/auth/login",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"email\": \"{{ownerEmail}}\",\n  \"password\": \"{{ownerPassword}}\"\n}"
-            },
-            "url": "{{baseUrl}}/api/auth/login",
-            "description": "Public endpoint. Owner credentials from seed script."
-          },
-          "response": [],
-          "auth": {
-            "type": "noauth"
+            }
           },
           "event": [
             {
@@ -151,51 +87,55 @@
                 "exec": [
                   "if (pm.response.code === 200) {",
                   "  const json = pm.response.json();",
-                  "  if (json.token) pm.collectionVariables.set('token', json.token);",
-                  "}",
-                  "pm.test('Expected owner login response code', function () {",
-                  "  pm.expect([200,403,401,400]).to.include(pm.response.code);",
-                  "});"
+                  "  if (json.token) pm.collectionVariables.set('ownerToken', json.token);",
+                  "}"
                 ]
               }
             }
-          ]
+          ],
+          "response": []
         },
         {
-          "name": "POST /api/auth/login (wrong password)",
+          "name": "POST /api/auth/login (pending owner - expect 403)",
           "request": {
             "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/auth/login",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"{{adminEmail}}\",\n  \"password\": \"wrongpass\"\n}"
-            },
-            "url": "{{baseUrl}}/api/auth/login",
-            "description": "Expect 401."
+              "raw": "{\n  \"email\": \"{{pendingOwnerEmail}}\",\n  \"password\": \"{{pendingOwnerPassword}}\"\n}"
+            }
           },
-          "response": [],
-          "auth": {
-            "type": "noauth"
-          }
+          "response": []
         }
       ]
     },
     {
-      "name": "Admin (Protected)",
+      "name": "2) Admin",
       "item": [
         {
           "name": "GET /api/admin/owners/pending",
           "request": {
             "method": "GET",
-            "header": [],
-            "url": "{{baseUrl}}/api/admin/owners/pending",
-            "description": "Requires super_admin bearer token."
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": "{{baseUrl}}/api/admin/owners/pending"
           },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "  const json = pm.response.json();",
+                  "  const owners = json.owners || [];",
+                  "  const pending = owners.find(o => o.email === pm.collectionVariables.get('pendingOwnerEmail'));",
+                  "  if (pending && pending._id) pm.collectionVariables.set('pendingOwnerId', pending._id);",
+                  "}"
+                ]
+              }
+            }
+          ],
           "response": []
         },
         {
@@ -203,43 +143,10 @@
           "request": {
             "method": "PATCH",
             "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
             ],
-            "url": "{{baseUrl}}/api/admin/owners/{{ownerId}}/approve",
-            "description": "Requires super_admin. Approves owner and creates/links restaurant."
-          },
-          "response": []
-        },
-        {
-          "name": "PATCH /api/admin/owners/:id/reject",
-          "request": {
-            "method": "PATCH",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": "{{baseUrl}}/api/admin/owners/{{ownerId}}/reject",
-            "description": "Requires super_admin."
-          },
-          "response": []
-        },
-        {
-          "name": "PATCH /api/admin/owners/:id/disable",
-          "request": {
-            "method": "PATCH",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": "{{baseUrl}}/api/admin/owners/{{ownerId}}/disable",
-            "description": "Requires super_admin."
+            "url": "{{baseUrl}}/api/admin/owners/{{pendingOwnerId}}/approve"
           },
           "response": []
         },
@@ -247,10 +154,25 @@
           "name": "GET /api/admin/restaurants",
           "request": {
             "method": "GET",
-            "header": [],
-            "url": "{{baseUrl}}/api/admin/restaurants",
-            "description": "Requires super_admin."
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": "{{baseUrl}}/api/admin/restaurants"
           },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "  const json = pm.response.json();",
+                  "  const restaurants = json.restaurants || [];",
+                  "  const r = restaurants[0];",
+                  "  if (r && r._id) pm.collectionVariables.set('restaurantId', r._id);",
+                  "}"
+                ]
+              }
+            }
+          ],
           "response": []
         },
         {
@@ -258,17 +180,11 @@
           "request": {
             "method": "POST",
             "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
             ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"totalTables\": 5\n}"
-            },
             "url": "{{baseUrl}}/api/admin/restaurants/{{restaurantId}}/tables",
-            "description": "Requires super_admin. Recreates tables 1..totalTables with QRs."
+            "body": { "mode": "raw", "raw": "{\n  \"totalTables\": 6\n}" }
           },
           "response": []
         },
@@ -276,23 +192,44 @@
           "name": "GET /api/admin/restaurants/:id/tables",
           "request": {
             "method": "GET",
-            "header": [],
-            "url": "{{baseUrl}}/api/admin/restaurants/{{restaurantId}}/tables",
-            "description": "Requires super_admin."
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": "{{baseUrl}}/api/admin/restaurants/{{restaurantId}}/tables"
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/menu/:restaurantId (admin view)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": "{{baseUrl}}/api/menu/{{restaurantId}}"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "3) Owner Scoped",
+      "item": [
+        {
+          "name": "GET /api/menu/my",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{ownerToken}}" }],
+            "url": "{{baseUrl}}/api/menu/my"
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/menu/my/tables",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{ownerToken}}" }],
+            "url": "{{baseUrl}}/api/menu/my/tables"
           },
           "response": []
         }
       ]
     }
-  ],
-  "auth": {
-    "type": "bearer",
-    "bearer": [
-      {
-        "key": "token",
-        "value": "{{token}}",
-        "type": "string"
-      }
-    ]
-  }
+  ]
 }
