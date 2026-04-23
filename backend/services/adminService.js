@@ -15,16 +15,28 @@ async function approveOwner(ownerId) {
   if (user.role !== 'owner') {
     throw new Error('User is not an owner');
   }
+  if (user.restaurantId) {
+    throw new Error('Owner already has a linked restaurant');
+  }
+
+  const restaurantName = user.pendingRestaurantName || user.name;
+  const restaurantAddress = user.pendingRestaurantAddress || 'Address pending update';
 
   user.status = 'approved';
 
   const restaurant = await Restaurant.create({
-    name: user.name,
-    address: 'Address pending update',
+    name: restaurantName,
+    address: restaurantAddress,
+    phone: user.pendingRestaurantPhone || '',
+    email: user.pendingRestaurantEmail || '',
     ownerId: user._id,
   });
 
   user.restaurantId = restaurant._id;
+  user.pendingRestaurantName = undefined;
+  user.pendingRestaurantAddress = undefined;
+  user.pendingRestaurantPhone = undefined;
+  user.pendingRestaurantEmail = undefined;
   await user.save();
 
   return user;
