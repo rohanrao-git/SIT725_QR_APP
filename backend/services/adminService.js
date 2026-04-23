@@ -7,6 +7,12 @@ async function getPendingOwners() {
   return User.find({ role: 'owner', status: 'pending' });
 }
 
+async function getAllOwners() {
+  return User.find({ role: 'owner' })
+    .select('-password')
+    .populate('restaurantId', 'name address phone email totalTables isActive');
+}
+
 async function approveOwner(ownerId) {
   const user = await User.findById(ownerId);
   if (!user) {
@@ -94,6 +100,7 @@ async function getTablesByRestaurant(restaurantId) {
 
 module.exports = {
   getPendingOwners,
+  getAllOwners,
   approveOwner,
   rejectOwner,
   disableOwner,
