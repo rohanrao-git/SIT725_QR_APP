@@ -20,7 +20,7 @@
   </ul>
 
   <ul id="adminDropdown" class="dropdown-content">
-    <li><a href="#owners-section">Pending Owners</a></li>
+    <li><a href="pending_owners.html">Pending Owners</a></li>
     <li><a href="restaurants.html">Restaurants</a></li>
     <li class="divider" tabindex="-1"></li>
     <li><a href="#!" id="logoutDropdownBtn">Logout</a></li>
@@ -52,7 +52,10 @@
 
   <div class="container section">
     <h4>Owner Management</h4>
-    <p class="grey-text text-darken-1" id="adminWelcome">Loading admin profile...</p>
+
+    <div class="input-field col s12">
+      <input id="ownerSearch" type="text" placeholder="Search owners by name, email, or status">
+    </div>
 
     <div class="card">
       <div class="card-content">

@@ -21,7 +21,7 @@
   </ul>
 
   <ul id="adminDropdown" class="dropdown-content">
-    <li><a href="#owners-section">Pending Owners</a></li>
+    <li><a href="pending_owners.html">Pending Owners</a></li>
     <li><a href="restaurants.html">Restaurants</a></li>
     <li class="divider" tabindex="-1"></li>
     <li><a href="#!" id="logoutDropdownBtn">Logout</a></li>
@@ -81,22 +81,7 @@
         <div class="card">
           <div class="card-content">
             <span class="card-title">Pending Owner Requests</span>
-
-            <table class="striped highlight">
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Email</th>
-                  <th>Status</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody id="pendingOwnersTable">
-                <tr>
-                  <td colspan="4" class="center-align">Loading pending owners...</td>
-                </tr>
-              </tbody>
-            </table>
+            <div id="pendingOwnersCards" class="row"></div>
           </div>
         </div>
       </div>
@@ -113,7 +98,6 @@
                   <th>Address</th>
                   <th>Active</th>
                   <th>Total Tables</th>
-                  <th>Menu</th>
                 </tr>
               </thead>
               <tbody id="restaurantsTable">

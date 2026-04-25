@@ -36,6 +36,7 @@ nav ul li a.dropdown-trigger {
 .card {
   border-radius: 12px;
 }
+
 .container.section {
   display: flex;
   flex-wrap: wrap;
@@ -60,16 +61,21 @@ nav ul li a.dropdown-trigger {
     width: 100%;
   }
 }
+
 .table-responsive {
   overflow-x: auto;
   width: 100%;
 }
+
 th {
   white-space: nowrap;
 }
-th, td {
-  padding: 14px 14px;   
+
+th,
+td {
+  padding: 14px 14px;
 }
+
 .admin-data-table {
   min-width: 900px;
   border-collapse: collapse;
@@ -126,12 +132,13 @@ th, td {
 
 .custom-modal {
   width: 85% !important;
-  height: 95vh !important;        
+  height: 95vh !important;
   max-height: 95vh !important;
-  top: 2.5% !important;           
+  top: 2.5% !important;
   border-radius: 12px;
   flex-direction: column;
 }
+
 .custom-modal .modal-content {
   flex: 1;
   overflow-y: auto;
@@ -141,4 +148,108 @@ th, td {
 .custom-modal .modal-footer {
   border-top: 1px solid #eee;
   flex-shrink: 0;
+}
+
+.input-field input[type="text"] {
+  background: #fff;
+  padding-left: 12px;
+  border-radius: 8px;
+}
+
+.restaurant-link {
+  color: #00695c;
+  font-weight: 600;
+}
+
+.restaurant-link:hover {
+  text-decoration: underline;
+}
+
+.clickable-row {
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.clickable-row:hover {
+  background-color: #f1f8f6;
+}
+
+.table-qr-card {
+  border-radius: 14px;
+  min-height: 360px;
+}
+
+.qr-image {
+  width: 220px;
+  height: 220px;
+  object-fit: contain;
+  margin-top: 18px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 10px;
+  background: white;
+}
+
+.restaurant-top-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  flex-basis: 100%;
+  margin-bottom: 20px;
+}
+
+.restaurant-top-actions #viewMenuBtn {
+  margin-left: auto;
+}
+
+.restaurant-top-actions .btn-flat {
+  color: #00695c;
+}
+
+.restaurant-top-actions .btn {
+  border-radius: 8px;
+}
+.full-width-card {
+  width: 100% !important;
+  flex-basis: 100% !important;
+}
+
+.search-bar-wrapper {
+  width: 100%;
+  flex-basis: 100%;
+  display: block;
+}
+
+.search-bar-wrapper .input-field {
+  width: 100%;
+  margin-top: 20px;
+}
+
+#pendingOwnerSearch {
+  width: 100%;
+  box-sizing: border-box;
+  background: #fff;
+  padding-left: 12px;
+  border-radius: 8px;
+}
+.pending-owner-card {
+  border-radius: 14px;
+  min-height: 220px;
+}
+.pending-owner-card .card-title {
+  font-weight: 600;
+  color: #004d40;
+}
+.pending-owner-card p {
+  margin: 8px 0;
+}
+.pending-owner-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.pending-owner-actions .btn-small {
+  border-radius: 6px;
 }
