@@ -1,0 +1,14 @@
+{
+  "name": "sit725-qr-app",
+  "version": "1.0.0",
+  "description": "QR-Based Restaurant Menu Web Application",
+  "scripts": {
+    "test": "cd backend && npm test"
+  },
+  "devDependencies": {
+    "chai": "^4.4.1",
+    "mocha": "^10.4.0",
+    "sinon": "^18.0.0",
+    "supertest": "^7.0.0"
+  }
+}
