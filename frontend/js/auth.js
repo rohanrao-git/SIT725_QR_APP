@@ -37,15 +37,12 @@ document.addEventListener("DOMContentLoaded", () => {
       if (profileData.role === "super_admin" || profileData.role === "admin") {
         window.location.href = "../pages/admin-dashboard.html";
       } else if (profileData.role === "owner") {
-        // later you can make owner-dashboard.html
         M.toast({ html: "Redirect to Owner Dashboard" });
       } else {
         throw new Error("Unauthorized role");
       }
 
     } catch (error) {
-      // alert("Login failed: " + error.message);
-      // M.toast({ html: error.message, classes: "red" });
       loginMessage.textContent = error.message;
       loginMessage.className = "status-message center-align red-text";
     }

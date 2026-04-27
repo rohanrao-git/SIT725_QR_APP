@@ -13,7 +13,6 @@
 
 <body class="dashboard-page">
 
-  <!-- Dropdown menus -->
   <ul id="manageDropdown" class="dropdown-content">
     <li><a href="owners.html">Manage Owners</a></li>
     <li><a href="#restaurants-section">Manage Restaurants</a></li>
@@ -21,13 +20,12 @@
   </ul>
 
   <ul id="adminDropdown" class="dropdown-content">
-    <li><a href="#owners-section">Pending Owners</a></li>
+    <li><a href="pending_owners.html">Pending Owners</a></li>
     <li><a href="restaurants.html">Restaurants</a></li>
     <li class="divider" tabindex="-1"></li>
     <li><a href="#!" id="logoutDropdownBtn">Logout</a></li>
   </ul>
 
-  <!-- Navbar -->
   <nav class="teal darken-2">
     <div class="nav-wrapper container">
       <a href="admin-dashboard.html" class="brand-logo">Admin</a>
@@ -55,7 +53,11 @@
   <div class="container section">
     <h4>Restaurants</h4>
     <p class="grey-text text-darken-1">All restaurant details are listed below.</p>
-
+    <div class="row">
+      <div class="input-field col s12">
+        <input id="restaurantSearch" type="text" placeholder="Search restaurants by name, address, or status">
+      </div>
+    </div>
     <div class="row">
       <div class="col s12 m4">
         <div class="card dashboard-card">
@@ -81,7 +83,6 @@
                     <th>Address</th>
                     <th>Active</th>
                     <th>Total Tables</th>
-                    <th>Menu</th>
                   </tr>
                 </thead>
                 <tbody id="restaurantsTable">
