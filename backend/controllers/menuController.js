@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const MenuItem = require('../models/MenuItem');
 const Table = require('../models/Table');
 const User = require('../models/User');
+const menuService = require('../services/menuService');
 
 async function getOwnerContext(userId) {
   const owner = await User.findById(userId).select('role status restaurantId');
@@ -69,8 +70,118 @@ async function getMenuByRestaurant(req, res) {
   }
 }
 
+async function createMenuItem(req, res) {
+  try {
+    const owner = await getOwnerContext(req.user.id);
+    const { name, category, description, price, image, isAvailable } = req.body;
+    if (!name || price === undefined) {
+      return res.status(400).json({ success: false, message: 'Name and price are required' });
+    }
+    const item = await menuService.createMenuItem(owner.restaurantId, {
+      name,
+      category,
+      description,
+      price,
+      image,
+      isAvailable,
+    });
+    return res.status(201).json({ success: true, item });
+  } catch (error) {
+    if (error.message === 'Account is not approved') {
+      return res.status(403).json({ success: false, message: error.message });
+    }
+    if (
+      error.message === 'Owner account not found' ||
+      error.message === 'Owner has no linked restaurant'
+    ) {
+      return res.status(404).json({ success: false, message: error.message });
+    }
+    return res.status(500).json({ success: false, message: error.message });
+  }
+}
+
+async function updateMenuItem(req, res) {
+  try {
+    const owner = await getOwnerContext(req.user.id);
+    const { itemId } = req.params;
+    const item = await menuService.updateMenuItem(owner.restaurantId, itemId, req.body);
+    return res.status(200).json({ success: true, item });
+  } catch (error) {
+    if (error.message === 'Account is not approved') {
+      return res.status(403).json({ success: false, message: error.message });
+    }
+    if (error.message === 'Invalid item id') {
+      return res.status(400).json({ success: false, message: error.message });
+    }
+    if (
+      error.message === 'Owner account not found' ||
+      error.message === 'Owner has no linked restaurant' ||
+      error.message === 'Menu item not found'
+    ) {
+      return res.status(404).json({ success: false, message: error.message });
+    }
+    return res.status(500).json({ success: false, message: error.message });
+  }
+}
+
+async function deleteMenuItem(req, res) {
+  try {
+    const owner = await getOwnerContext(req.user.id);
+    const { itemId } = req.params;
+    await menuService.deleteMenuItem(owner.restaurantId, itemId);
+    return res.status(200).json({ success: true, message: 'Menu item deleted' });
+  } catch (error) {
+    if (error.message === 'Account is not approved') {
+      return res.status(403).json({ success: false, message: error.message });
+    }
+    if (error.message === 'Invalid item id') {
+      return res.status(400).json({ success: false, message: error.message });
+    }
+    if (
+      error.message === 'Owner account not found' ||
+      error.message === 'Owner has no linked restaurant' ||
+      error.message === 'Menu item not found'
+    ) {
+      return res.status(404).json({ success: false, message: error.message });
+    }
+    return res.status(500).json({ success: false, message: error.message });
+  }
+}
+
+async function toggleAvailability(req, res) {
+  try {
+    const owner = await getOwnerContext(req.user.id);
+    const { itemId } = req.params;
+    const { isAvailable } = req.body;
+    if (typeof isAvailable !== 'boolean') {
+      return res.status(400).json({ success: false, message: 'isAvailable must be a boolean' });
+    }
+    const item = await menuService.setAvailability(owner.restaurantId, itemId, isAvailable);
+    return res.status(200).json({ success: true, item });
+  } catch (error) {
+    if (error.message === 'Account is not approved') {
+      return res.status(403).json({ success: false, message: error.message });
+    }
+    if (error.message === 'Invalid item id') {
+      return res.status(400).json({ success: false, message: error.message });
+    }
+    if (
+      error.message === 'Owner account not found' ||
+      error.message === 'Owner has no linked restaurant' ||
+      error.message === 'Menu item not found'
+    ) {
+      return res.status(404).json({ success: false, message: error.message });
+    }
+    return res.status(500).json({ success: false, message: error.message });
+  }
+}
+
 module.exports = {
   getOwnerMenu,
   getOwnerTables,
   getMenuByRestaurant,
+  createMenuItem,
+  updateMenuItem,
+  deleteMenuItem,
+  toggleAvailability,
 };
