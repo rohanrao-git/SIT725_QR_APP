@@ -17,7 +17,8 @@
     { "key": "adminToken", "value": "" },
     { "key": "ownerToken", "value": "" },
     { "key": "pendingOwnerId", "value": "" },
-    { "key": "restaurantId", "value": "" }
+    { "key": "restaurantId", "value": "" },
+    { "key": "menuItemId", "value": "" }
   ],
   "item": [
     {
@@ -226,6 +227,77 @@
             "method": "GET",
             "header": [{ "key": "Authorization", "value": "Bearer {{ownerToken}}" }],
             "url": "{{baseUrl}}/api/menu/my/tables"
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/menu/my (create menu item)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{ownerToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": "{{baseUrl}}/api/menu/my",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Grilled Salmon\",\n  \"category\": \"Mains\",\n  \"description\": \"Fresh Atlantic salmon with lemon butter sauce\",\n  \"price\": 28.5,\n  \"image\": \"\",\n  \"isAvailable\": true\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  const json = pm.response.json();",
+                  "  if (json.item && json.item._id) pm.collectionVariables.set('menuItemId', json.item._id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "PUT /api/menu/my/:itemId (update menu item)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{ownerToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": "{{baseUrl}}/api/menu/my/{{menuItemId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"price\": 30.0,\n  \"description\": \"Fresh Atlantic salmon with lemon butter sauce and seasonal vegetables\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PATCH /api/menu/my/:itemId/availability (toggle availability)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{ownerToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": "{{baseUrl}}/api/menu/my/{{menuItemId}}/availability",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"isAvailable\": false\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE /api/menu/my/:itemId (delete menu item)",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{ownerToken}}" }],
+            "url": "{{baseUrl}}/api/menu/my/{{menuItemId}}"
           },
           "response": []
         }
